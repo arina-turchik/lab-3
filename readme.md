@@ -37,7 +37,6 @@ int main()
     printf("\n");
     return 0;
 }
-
 ```
 
 ## Переработанный под задание код
@@ -46,41 +45,62 @@ int main()
 #include <stdlib.h>
 #include <time.h>
 
-int gcd(int a, int b)
+int vzm(int a,int b)
 {
-    int m;
-    int min;
-    if (a<b)
+    int c;
+    if (a < b)
     {
-        int min = a/2;
-        for (m=2;m<=min;m++)
-        {
-            if (a%m==0 & b%m==0)
-                return -1;
-        }
+        c = a / 2;
     }
     else
     {
-        if (b<a)
-        {int min = b/2;}
-        if (a==b)
-        {return -1;}
-        for (m=2;m<=min;m++)
+        c = b / 2;
+    }
+    if (a == b)
+    {
+        return 0;
+    }
+    for (int d = 2; d <= c; d++)
+    {
+        if (a % d == 0 && b % d == 0)
         {
-            if (a%m==0 & b%m==0)
-                return -1;
+            return 0;
         }
     }
     return 1;
 }
 
-void fill(int n, int a[])
+void minmax(int A[], int n)
 {
-    int i;
-    for (i = 0; i < n; i++)
-        a[i] = rand() % 101 - 50;
+    int min = A[0];
+    int max = A[0];
+    int min_ind = 0;
+    int max_ind = 0;
+    for (int i = 1; i < n; i++)
+    {
+        if (A[i] < min)
+        {
+            min = A[i];
+            min_ind = i;
+        }
+        if (A[i] > max)
+        {
+            max = A[i];
+            max_ind = i;
+        }
+    }
+    if (min_ind != max_ind) 
+    {
+        A[min_ind] = 0;
+        A[max_ind] = 0;
+    }
 }
 
+void fill(int n, int a[])
+{
+    for (int i = 0; i < n; i++)
+        a[i] = rand() % 101 - 50;
+}
 
 int main()
 {
@@ -90,37 +110,44 @@ int main()
     scanf("%d", &n);
     int A[n];
     fill(n, A);
-    int i;
-    for (i = 0; i < n; i++)
+    for (int i = 0; i < n; i++)
         printf("%4d", A[i]);
     printf("\n");
     int B[n];
-    int r,q,t;
-    for (r=0;r<n;r++)
+    int r;
+    int t;
+    int u = 0;
+    for (int i = 0; i < n; i++)
     {
-        for (q=1;q<n;q++)
+        B[i] = A[i];
+    }
+    for (int i = 0; i < n - 1; i++)
+    {
+        for (r = i + 1; r < n; r++)
         {
-            t = gcd(A[r],A[q]);
-            if (t==1)
+            t = vzm(A[i], A[r]);
+            if (t == 1)
             {
-                if(A[r]<A[q])
-                {
-                    B[r]=A[q];
-                    B[q]=A[r];
-
-                }
-                else
-                {
-                    B[r]=A[r];
-                    B[q]=A[q];
-
-                }
+                int z = B[i];
+                B[i] = B[r];
+                B[r] = z;
+                u = u + 1;
             }
         }
     }
-        for (i = 0; i < n; i++)
-        printf("%4d ", B[i]);
+    if (u == 0)
+    {
+        minmax(B, n);
+    }
+    for (int i = 0; i < n; i++)
+        printf("%4d", B[i]);
     printf("\n");
 }
-
 ```
+## Скриношот результатов работы программы
+ <image src = result.png alt="result">
+
+ ## Источники
+ [Функции: вызов функции, возвращаемое значение](https://prog-cpp.ru/c-functions/)  
+ [Markdown](https://doka.guide/tools/markdown/)  
+ [Evil-teacher](https://evil-teacher.on.fleek.co/prog_pm/term1/lab03/)
