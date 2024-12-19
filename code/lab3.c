@@ -1,62 +1,35 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 
 int vzm(int a,int b)
 {
-    int c;
-    if (a < b)
+    int t1 = a%b==0 ? 1 : 0;
+    if (t1==0)
     {
-        c = a / 2;
+        t1 = b%a==0 ? 1 : 0;
     }
-    else
+    if (t1==1)
     {
-        c = b / 2;
+        return 1;
     }
-    if (a == b)
+    int t= a<b ? abs(a) : abs(b);
+    int end_i=(int)t/2+1;
+    for (int i=2;i<end_i;i++)
     {
-        return 0;
-    }
-    for (int d = 2; d <= c; d++)
-    {
-        if (a % d == 0 && b % d == 0)
+        if ((a%i==0)&&(b%i==0))
         {
-            return 0;
+            return 1;
         }
     }
-    return 1;
-}
-
-void minmax(int A[], int n)
-{
-    int min = A[0];
-    int max = A[0];
-    int min_ind = 0;
-    int max_ind = 0;
-    for (int i = 1; i < n; i++)
-    {
-        if (A[i] < min)
-        {
-            min = A[i];
-            min_ind = i;
-        }
-        if (A[i] > max)
-        {
-            max = A[i];
-            max_ind = i;
-        }
-    }
-    if (min_ind != max_ind) 
-    {
-        A[min_ind] = 0;
-        A[max_ind] = 0;
-    }
+    return 0;
 }
 
 void fill(int n, int a[])
 {
     for (int i = 0; i < n; i++)
-        a[i] = rand() % 101 - 50;
+        a[i] = rand() % 101 +1;
 }
 
 int main()
@@ -70,33 +43,61 @@ int main()
     for (int i = 0; i < n; i++)
         printf("%4d", A[i]);
     printf("\n");
-    int B[n];
-    int r;
-    int t;
-    int u = 0;
-    for (int i = 0; i < n; i++)
+  int max_ind=0;
+  int min_ind=0;
+  int min=A[0];
+  int max=A[0];
+  for (int i=0;i<n;i++)
+  {
+    if(A[i]<A[min_ind])
     {
-        B[i] = A[i];
+        min_ind=i;
+        min=A[min_ind];
     }
-    for (int i = 0; i < n - 1; i++)
+    if (A[i]>A[max_ind])
+   {
+        max_ind=i;
+        max=A[max_ind];
+   } 
+  }
+  printf("min index = %d max index = %d \n", min_ind, max_ind);
+  int u=0;
+  for (int i=0;i<n-1;i++)
+  {
+    for (int r=i+1;r<n;r++)
     {
-        for (r = i + 1; r < n; r++)
+           if (u>0)
         {
-            t = vzm(A[i], A[r]);
-            if (t == 1)
+            break;
+        }
+        int t=vzm(A[i],A[r]);
+        if (t==0)
+        {
+            printf("%d,%d \n", A[i], A[r]);
+            if (A[i]<A[r])
             {
-                int z = B[i];
-                B[i] = B[r];
-                B[r] = z;
-                u = u + 1;
+                A[max_ind]=A[i];
+                A[i]= max;
+                A[min_ind]=A[r];
+                A[r]= min;
             }
+            else
+            {
+                A[max_ind]=A[r];
+                A[r]= max;
+                A[min_ind]=A[i];
+                A[i]= min;
+            }
+            u=u+1;
         }
     }
-    if (u == 0)
-    {
-        minmax(B, n);
-    }
+  }
+  if (u==0)
+  {
+    A[max_ind]=0;
+    A[min_ind]=0;
+  }
     for (int i = 0; i < n; i++)
-        printf("%4d", B[i]);
+        printf("%4d", A[i]);
     printf("\n");
 }
